@@ -1,0 +1,29 @@
+name: Build and Push to GHCR
+
+on:
+  push:
+    branches:
+      - main  # Change this to your preferred branch
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  push-to-ghcr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write  # Required to push to GHCR
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.actor }}/flask-app:latest .
+
+      - name: Push Docker image to GHCR
+        run: |
+          docker push ghcr.io/${{ github.actor }}/flask-app:latest

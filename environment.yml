@@ -1,0 +1,6 @@
+name: flask-playground
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - flask
